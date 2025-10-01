@@ -31,7 +31,7 @@ export const signUp = async (req, res) => {
     });
     //generate token
     let token = await gentoken(user._id);
-    req.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
@@ -58,7 +58,7 @@ export const login = async (req, res) => {
     }
     // again token generation
      let token = await gentoken(user._id);
-    req.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
@@ -68,4 +68,14 @@ export const login = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: `Login error ${error}` });
   }
-};
+}
+//logout
+export const logOut = async (req,res)=>{
+  try {
+    await res.clearCookie("token")
+       return res.status(201).json({message:"Logout Successfully✅"})
+
+  } catch (error) {
+    return res.status(500).json({ message: `Logout error ${error}` });
+  }
+}
