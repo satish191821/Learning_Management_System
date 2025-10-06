@@ -100,10 +100,10 @@ function SignUp() {
           </div>
 
           <div className="flex flex-row md:w-[58%] w-[70%] items-center justify-around gap-2">
-            <span className={`px-[10px] py-[5px] border-2 border-[#9d2727] rounded-xl cursor-pointer hover:border-black ${role=== "student"? "border-[black] ": "border-[#646464]"}`} onClick={()=>setRole("student")}>
+            <span className={`px-[10px] py-[5px] border-2 border-[#9d2727] rounded-xl cursor-pointer hover:border-black hover:bg-green-500 ${role=== "student"? "border-[black]  bg-blue-500 ": "border-[#646464]"}`} onClick={()=>setRole("student")}>
               Student
             </span>
-            <span className={`px-[10px] py-[5px] border-2 border-[#9d2727] rounded-xl cursor-pointer hover:border-black ${role=== "educator"? "border-[black] ": "border-[#646464]"}`} onClick={()=>setRole("educator")}>
+            <span className={`px-[10px] py-[5px] border-2 border-[#9d2727] rounded-xl cursor-pointer hover:border-black  hover:bg-green-500 ${role=== "educator"? "border-[black] bg-blue-500 ": "border-[#646464]"}`} onClick={()=>setRole("educator")}>
               Educator
             </span>
           </div>

@@ -1,0 +1,173 @@
+import React, { useState } from "react";
+import logo from "../assets/logo1.jpg";
+import { IoPersonCircle } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { serverUrl } from "../App";
+import { setUserData } from "../redux/userSlice";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { GiSplitCross } from "react-icons/gi";
+
+function Nav() {
+  const { userData } = useSelector((state) => state.user); //get user data
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [show, setShow] = useState(false);
+  const [showHam, setShowHam] = useState(false);
+
+  //handle logout
+  const handleLogOut = async () => {
+    try {
+      const result = await axios.get(`${serverUrl}/api/auth/logout`, {
+        withCredentials: true,
+      });
+      dispatch(setUserData(null));
+      toast.success(result?.data?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  return (
+    <div>
+      <div className="w-[100%] h-[70px] fixed top-0 px-[20px] py-[10px] flex items-center justify-between bg-[#00000047] z-10">
+        <div className="lg:w-[20%] w-[40%] lg:pl-[50px]">
+          <img
+            src={logo}
+            alt=""
+            className="w-[60px] rounded-[5px] border-2 border-white"
+          />
+        </div>
+        <div className="w-[30%] lg:flex   items-center justify-center gap-4  hidden  ">
+          {!userData && (
+            <IoPersonCircle
+              className="w-[50px] h-[50px] fill-black cursor-pointer"
+              onClick={() => setShow((prev) => !prev)}
+            />
+          )}
+
+          {userData && (
+            <div
+              className="w-[50px] h-[50px]  rounded-full text-white flex  items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer"
+              onClick={() => setShow((prev) => !prev)}
+            >
+              {userData?.name.slice(0, 1).toUpperCase()}
+            </div>
+          )}
+
+          {userData?.role === "educator" && (
+            <div
+              style={{ padding: "10px 20px" }}
+              className="border-2 border-white text-white bg-black rounded-[10px] text-[18px] font-light cursor-pointer"
+            >
+              Dashboard
+            </div>
+          )}
+          {!userData ? (
+            <span
+              style={{ padding: "10px 20px" }}
+              className="border-2 border-white text-white rounded-[10px] text-[18px] font-light cursor-pointer bg-[#000000d5]"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </span>
+          ) : (
+            <span
+              style={{ padding: "10px 20px" }}
+              className="bg-white text-black rounded-[10px] shadow-sm shadow-black text-[18px] cursor-pointer"
+              onClick={handleLogOut}
+            >
+              Logout
+            </span>
+          )}
+          {userData && show && (
+            <div className="absolute top-[110%] right-[15%] flex items-center flex-col justify-center gap-2 text-[16px] rounded-md bg-white px-[15px] py-[10px] border-[2px] border-black hover:border-white hover:text-white cursor-pointer hover:bg-black">
+              <span className=" bg-black text-white px-[30px] py-[10px] rounded-1xl hover:bg-gray-600  " onClick={()=>navigate("/profile")}>
+                My Profile
+              </span>
+
+              <span className=" bg-black text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600  " >
+                My Courses
+              </span>
+            </div>
+          )}
+        </div>
+        {/* hamburger */}
+        <GiHamburgerMenu
+          className=" w-[35px] h-[35px] lg:hidden fill-black cursor-pointer"
+          onClick={() => setShowHam((prev) => !prev)}
+        />
+
+        {/* cross and transition for small devices */}
+        <div
+          className={`fixed top-0 w-[100vw] h-[100vh] bg-[#000000d6] flex items-center justify-center flex-col gap-5 z-10 lg:hidden ${
+            showHam
+              ? "translate-x-[0] transition duration-600"
+              : "translate-x-[100%] transition duration-600"
+          }`}
+        >
+          <GiSplitCross
+            className="w-[35px] h-[35px]  fill-white absolute top-5 right-[4%] cursor-pointer"
+            onClick={() => setShowHam((prev) => !prev)}
+          />
+
+          {/*  profile image for small devices in the hamburger */}
+          {!userData && (
+            <IoPersonCircle
+              className="w-[50px] h-[50px] fill-white cursor-pointer"
+              onClick={() => setShow((prev) => !prev)}
+            />
+          )}
+
+          {userData && 
+            <div
+              className="w-[50px] h-[50px] flex items-center justify-center rounded-full text-white text-[20px] border-2 bg-black border-white cursor-pointer"
+              onClick={() => setShow((prev) => !prev)}
+            >
+              {userData?.name.slice(0, 1).toUpperCase()}
+            </div>
+          }
+          {/* my profile on hamburger */}
+          <div className="border-2 w-[200px] h-[65px] flex justify-center  items-center   border-white text-white bg-black rounded-[10px] text-[18px] font-light cursor-pointer" onClick={()=>navigate("/profile")}>
+              My profile
+            </div>
+
+          {/* Dashboard button for educators on small devices */}
+          {userData?.role === "educator" && 
+            <div className="border-2 w-[200px] h-[65px] flex justify-center items-center border-white text-white bg-black rounded-[10px] text-[18px] font-light cursor-pointer">
+              Dashboard
+            </div>
+          }
+          {/* my couses in hanburger*/}
+          <div className="border-2 w-[200px] h-[65px] flex justify-center  items-center   border-white text-white bg-black rounded-[10px] text-[18px] font-light cursor-pointer">
+              My Courses
+            </div>
+
+            {/* login/logout in hamburger */}
+              {!userData ? (
+            <span
+             
+              className="border-2 w-[200px] h-[65px] flex justify-center  items-center   border-white text-white bg-black rounded-[10px] text-[18px] font-light cursor-pointer"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </span>
+          ) : (
+            <span
+              
+              className="border-2 w-[200px] h-[65px] flex justify-center  items-center   border-white text-white bg-black rounded-[10px] text-[18px] font-light cursor-pointer"
+              onClick={handleLogOut}
+            >
+              Logout
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Nav;
