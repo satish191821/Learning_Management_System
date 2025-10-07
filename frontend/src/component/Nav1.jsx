@@ -21,7 +21,7 @@ function Nav() {
   const handleLogOut = async () => {
     try {
       const result = await axios.get(`${serverUrl}/api/auth/logout`, {
-        withCredentials: true,
+        withCredentials: true
       });
       dispatch(setUserData(null));
       toast.success(result?.data?.message);
